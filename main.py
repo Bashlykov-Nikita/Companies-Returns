@@ -31,6 +31,10 @@ components_urls = [
     "https://yfiua.github.io/index-constituents/constituents-hsi.csv",
 ]
 
+sp5000_comp = pd.read_html("https://en.wikipedia.org/wiki/List_of_S%26P_500_companies")[
+    0
+]["Symbol"]
+
 
 def get_components(url):
     if url:
@@ -64,7 +68,7 @@ def companies_returns_df(companies):
 
 
 # Daily components returns for each index:
-sp500 = companies_returns_df(get_components(components_urls[0]))
+sp500 = companies_returns_df(sp5000_comp)
 nasdaq100 = companies_returns_df(get_components(components_urls[1]))
 dowjones = companies_returns_df(get_components(components_urls[2]))
 ftse100 = companies_returns_df(get_components(components_urls[3]))
@@ -74,7 +78,13 @@ hsi = companies_returns_df(get_components(components_urls[5]))
 # Array to iterate
 index_components_histoical_data = [sp500, nasdaq100, dowjones, ftse100, dax, hsi]
 
-test = sp500.dropna(axis="columns", how="all")
-test = test.dropna()
-
+test = nasdaq100.dropna(axis="columns", how="all")
+test = sp500
+test.index = test.index.to_period("D")
+test.index.name = None
+pd.set_option("mode.use_inf_as_na", True)
+test = test.dropna(axis=1)
 # def clean_data(daily_hist_data):
+sp5000_comp.compare(get_components(components_urls[0]))
+
+# TODO: Start fetching from 1990 delete by columns companies which dont have enough data
