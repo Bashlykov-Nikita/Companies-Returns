@@ -31,10 +31,6 @@ components_urls = [
     "https://yfiua.github.io/index-constituents/constituents-hsi.csv",
 ]
 
-sp5000_comp = pd.read_html("https://en.wikipedia.org/wiki/List_of_S%26P_500_companies")[
-    0
-]["Symbol"]
-
 
 def get_components(url):
     if url:
@@ -45,14 +41,14 @@ def get_components(url):
 
 def companies_returns_df(companies):
     tickers = companies
-    first_ticker_data = yf.download(companies[0], period="max")
+    first_ticker_data = yf.download(companies[0], start="1990-01-01")
     # Create an empty DataFrame
     companies_df = pd.DataFrame(index=first_ticker_data.index, columns=tickers)
 
     # Fetch historical data for each ticker and populate the DataFrame
     for ticker in tickers:
         try:
-            data = yf.download(ticker, period="max")
+            data = yf.download(ticker, start="1990-01-01")
             if data.empty:
                 companies_df[ticker] = 0
             else:
@@ -68,23 +64,29 @@ def companies_returns_df(companies):
 
 
 # Daily components returns for each index:
-sp500 = companies_returns_df(sp5000_comp)
+sp500 = companies_returns_df(get_components(components_urls[0]))
 nasdaq100 = companies_returns_df(get_components(components_urls[1]))
 dowjones = companies_returns_df(get_components(components_urls[2]))
+# TODO: change indexing
 ftse100 = companies_returns_df(get_components(components_urls[3]))
 dax = companies_returns_df(get_components(components_urls[4]))
 hsi = companies_returns_df(get_components(components_urls[5]))
 
 # Array to iterate
-index_components_histoical_data = [sp500, nasdaq100, dowjones, ftse100, dax, hsi]
+index_components_histoical_data = [sp500, nasdaq100]
 
-test = nasdaq100.dropna(axis="columns", how="all")
-test = sp500
-test.index = test.index.to_period("D")
-test.index.name = None
 pd.set_option("mode.use_inf_as_na", True)
-test = test.dropna(axis=1)
-# def clean_data(daily_hist_data):
-sp5000_comp.compare(get_components(components_urls[0]))
 
-# TODO: Start fetching from 1990 delete by columns companies which dont have enough data
+
+# TODO: Clean columns with all 0
+def clean_data(daily_hist_data):
+    cleaned_data = []
+    for index_data in daily_hist_data:
+        buff = index_data.copy()
+        buff = buff.dropna(axis=1)
+        cleaned_data.append(buff)
+    return cleaned_data
+
+
+cleaned_data = clean_data(index_components_histoical_data)
+cleaned_data[0].index
