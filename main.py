@@ -2,25 +2,27 @@ import numpy as np
 import pandas as pd
 import yfinance as yf
 
-# Indexes: S&P 500, Nasdaq Composite, Dow Jones Industrial Average,
+### Indexes: S&P 500, Nasdaq Composite, Dow Jones Industrial Average,
 #          Russell 2000, FTSE 100, DAX PERFORMANCE-INDEX, CAC 40,
 #          Nikkei 225, HANG SENG INDEX.
+
 # Indexes shot names:
 
 index_names = [
-    "^GSPC",
-    "^IXIC",
-    "^DJI",
-    "^RUT",
-    "^FTSE",
-    "^GDAXI",
-    "^FCHI",
-    "^N225",
-    "^HSI",
+    ("^GSPC", "SP500"),
+    ("^IXIC", "NasdaqComposite"),
+    ("^DJI", "DowJones"),
+    ("^FTSE", "FTSE100"),
+    ("^GDAXI", "DAX"),
+    ("^HSI", "HSI"),
+    ### Not added yet:
+    ("^RUT", "Russell2000"),
+    ("^FCHI", "CAC40"),
+    ("^N225", "Nikkei225"),
 ]
 
 
-# Components URLs for: S&P 500, Nasdaq Composite, Dow Jones Industrial Average,
+### Components URLs for: S&P 500, Nasdaq Composite, Dow Jones Industrial Average,
 #                      FTSE 100, DAX PERFORMANCE-INDEX, HANG SENG INDEX.
 components_urls = [
     "https://yfiua.github.io/index-constituents/constituents-sp500.csv",
@@ -50,7 +52,7 @@ def companies_returns_df(companies):
         try:
             data = yf.download(ticker, start="1990-01-01")
             if data.empty:
-                companies_df[ticker] = 0
+                companies_df[ticker] = np.nan
             else:
                 # data["Return"] = data["Close"].pct_change()
                 data["Return"] = (data["Close"] - data["Open"]) / data["Open"]
@@ -63,7 +65,7 @@ def companies_returns_df(companies):
     return companies_df
 
 
-# Daily components returns for each index:
+### Daily components returns for each index:
 sp500 = companies_returns_df(get_components(components_urls[0]))
 nasdaq100 = companies_returns_df(get_components(components_urls[1]))
 dowjones = companies_returns_df(get_components(components_urls[2]))
@@ -73,12 +75,11 @@ dax = companies_returns_df(get_components(components_urls[4]))
 hsi = companies_returns_df(get_components(components_urls[5]))
 
 # Array to iterate
-index_components_histoical_data = [sp500, nasdaq100]
+index_components_histoical_data = [sp500, nasdaq100, dowjones, ftse100, dax, hsi]
 
 pd.set_option("mode.use_inf_as_na", True)
 
 
-# TODO: Clean columns with all 0
 def clean_data(daily_hist_data):
     cleaned_data = []
     for index_data in daily_hist_data:
@@ -89,4 +90,34 @@ def clean_data(daily_hist_data):
 
 
 cleaned_data = clean_data(index_components_histoical_data)
-cleaned_data[0].index
+cleaned_data[5]
+
+
+### Converting clean companies returns data into csv files:
+def convert_to_csv(clean_data, monthly=False):
+    i = 0
+    if monthly:
+        for index_data in clean_data:
+            index_data.to_csv(f"{index_names[i][1]}_m.csv", index=False)
+            i = i + 1
+    else:
+        for index_data in clean_data:
+            index_data.to_csv(f"{index_names[i][1]}_d.csv", index=False)
+            i = i + 1
+
+
+# FIXME: Problem with double indexing
+convert_to_csv(cleaned_data)
+
+
+### Testing
+
+test = get_components(components_urls[3])
+test1 = yf.download(test[0], start="1990-01-01")
+
+print(f"{index_names[1][1]}")
+df = pd.read_csv("SP500_d.csv")
+df1 = pd.read_csv("FTSE100_d.csv")
+
+df.index
+df1.index
