@@ -18,6 +18,12 @@ def get_components_names(url):
 len(get_components_names("https://www.tradingview.com/symbols/SPX/components/"))
 
 
-url = "https://www.tradingview.com/symbols/SPX/components/"
-
-# Send request and get the response
+### Indexes: S&P 500, Nasdaq Composite, Dow Jones Industrial Average,
+#          Russell 2000, FTSE 100, DAX PERFORMANCE-INDEX, CAC 40,
+#          Nikkei 225, HANG SENG INDEX.
+# * Less then 100 components:
+nas100_url = "https://www.tradingview.com/symbols/NASDAQ-NDX/components/"
+dowjones_url = "https://www.tradingview.com/symbols/TVC-DJI/components/"
+ftse100_url = "https://www.tradingview.com/symbols/TVC-UKX/components/"
+DAX_url = "https://www.tradingview.com/symbols/XETR-DAX/components/"
+cac40_url = "https://www.tradingview.com/symbols/EURONEXT-PX1/components/"
