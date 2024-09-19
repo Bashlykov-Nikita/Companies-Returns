@@ -23,30 +23,38 @@ nikkei_from_nikkei = {
 }
 
 
-def TV_mod(soup):
-    return soup.find_all(
+def soup(url: str):
+    response = requests.get(url)
+    return BeautifulSoup(response.content, "lxml")
+
+
+def components_TV(url: str):
+    components = soup(url).find_all(
         "a", class_="apply-common-tooltip tickerNameBox-GrtoTeat tickerName-GrtoTeat"
     )
-
-
-def wiki_mod(soup):
-    return soup.find_all("a", class_="external text")
-
-
-def get_components_names(url: str, mod=wiki_mod):
-    response = requests.get(url)
-    soup = BeautifulSoup(response.content, "lxml")
-
-    # Find the HTML elements containing the component names (adjust the selector as needed)
-    components = mod(soup)
-    # Extract the component names from the elements
     component_names = [component.text for component in components]
     return component_names
 
 
-get_components_names(sp500_from_wiki["SP500"])
+def components_nikkei(url: str):
+    components = soup(url).find_all("td")
+    components_names = []
+    for td in components:
+        text = td.text.strip()
+        try:
+            int(text)  # Check if the text can be converted to a float
+            components_names.append(text + ".T")
+        except ValueError:
+            pass
+        # component_names = [table.td.text + ".T" for table in component]
+    return components_names
 
 
-tickers = pd.read_html("https://en.wikipedia.org/wiki/List_of_S%26P_500_companies")[0][
-    "Symbol"
+len(components_nikkei(nikkei_from_nikkei["Nikkei225"]))
+
+components_TV(components_from_TradingView["Nasdaq100"])[0]
+
+
+tickers = pd.read_html("https://indexes.nikkei.co.jp/en/nkave/index/component")[0][
+    "Code"
 ]
