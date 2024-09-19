@@ -5,11 +5,11 @@ import yfinance as yf
 pd.set_option("mode.use_inf_as_na", True)
 
 
-###* Components URLs for: S&P 500, Nasdaq Composite, Dow Jones Industrial Average,
+###* Components URLs for: S&P 500, Nasdaq 100, Dow Jones Industrial Average,
 # *                      FTSE 100, DAX PERFORMANCE-INDEX, HANG SENG INDEX.
 components_urls = {
     "SP500": "https://yfiua.github.io/index-constituents/constituents-sp500.csv",
-    "NasdaqComposite": "https://yfiua.github.io/index-constituents/constituents-nasdaq100.csv",
+    "Nasdaq100": "https://yfiua.github.io/index-constituents/constituents-nasdaq100.csv",
     "DowJones": "https://yfiua.github.io/index-constituents/constituents-dowjones.csv",
     "FTSE100": "https://yfiua.github.io/index-constituents/constituents-ftse100.csv",
     "DAX": "https://yfiua.github.io/index-constituents/constituents-dax.csv",
@@ -67,7 +67,7 @@ def companies_returns_df(companies: pd.Series) -> pd.DataFrame:
 
 ###* Daily components returns for each index:
 sp500 = companies_returns_df(get_components(components_urls["SP500"]))
-nasdaq100 = companies_returns_df(get_components(components_urls["NasdaqComposite"]))
+nasdaq100 = companies_returns_df(get_components(components_urls["Nasdaq100"]))
 dowjones = companies_returns_df(get_components(components_urls["DowJones"]))
 ftse100 = companies_returns_df(get_components(components_urls["FTSE100"]))
 dax = companies_returns_df(get_components(components_urls["DAX"]))
@@ -136,8 +136,6 @@ def convert_to_csv(cleaned_data: list[pd.DataFrame], monthly=False):
             index_data.to_csv(f"{key}_d.csv", index=True)
             print(f"{key}_d.csv")
 
-
-convert_to_csv(cleaned_data)
 
 ### Creating CSV files for daily and monthly companies returns:
 
