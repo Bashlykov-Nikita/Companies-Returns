@@ -17,7 +17,13 @@ def components_TV(url: str) -> pd.Series:
     components = soup(url).find_all(
         "a", class_="apply-common-tooltip tickerNameBox-GrtoTeat tickerName-GrtoTeat"
     )
-    component_names = pd.Series([component.text for component in components])
+    if "HSI-HSI" in url:
+        component_names = pd.Series(
+            [component.text + ".HK" for component in components]
+        )
+    else:
+        component_names = pd.Series([component.text for component in components])
+
     return component_names
 
 
@@ -51,13 +57,18 @@ def get_components_from_csv(url: str) -> pd.Series:
         return pd.Series()
 
 
-try:
-    sp500 = components_sp500(urls.sp500_from_wiki["SP500"])
-except Exception as e:
-    print(f"Was not able to fetch: {e}")
-    print("Trying diffrent sourse")
-    sp500 = get_components_from_csv(urls.components_urls["SP500"])
-
-
-# * Test
-components_nikkei(urls.nikkei_from_nikkei["Nikkei225"])
+def get_components(indexes: dict, function):
+    index_dict = {}
+    for key in indexes:
+        try:
+            components = function(indexes[key])
+            index_dict[key] = components
+        except Exception as e:
+            print(f"Was not able to fetch: {e}")
+            print("Trying diffrent sourse")
+            if key in urls.components_urls.keys():
+                components = get_components_from_csv(urls.components_urls[key])
+                index_dict[key] = components
+            else:
+                print("No sourses available :(")
+    return index_dict

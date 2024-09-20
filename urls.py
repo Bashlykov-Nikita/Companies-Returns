@@ -29,3 +29,5 @@ components_urls = {
     "DAX": "https://yfiua.github.io/index-constituents/constituents-dax.csv",
     "HSI": "https://yfiua.github.io/index-constituents/constituents-hsi.csv",
 }
+
+# arr_of_dict = [sp500_from_wiki, components_from_TradingView, nikkei_from_nikkei]
