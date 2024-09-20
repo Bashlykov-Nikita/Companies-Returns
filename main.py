@@ -1,36 +1,9 @@
 import numpy as np
 import pandas as pd
 import yfinance as yf
+import components_names as cn
 
 pd.set_option("mode.use_inf_as_na", True)
-
-
-###* Components URLs for: S&P 500, Nasdaq 100, Dow Jones Industrial Average,
-# *                      FTSE 100, DAX PERFORMANCE-INDEX, HANG SENG INDEX.
-components_urls = {
-    "SP500": "https://yfiua.github.io/index-constituents/constituents-sp500.csv",
-    "Nasdaq100": "https://yfiua.github.io/index-constituents/constituents-nasdaq100.csv",
-    "DowJones": "https://yfiua.github.io/index-constituents/constituents-dowjones.csv",
-    "FTSE100": "https://yfiua.github.io/index-constituents/constituents-ftse100.csv",
-    "DAX": "https://yfiua.github.io/index-constituents/constituents-dax.csv",
-    "HSI": "https://yfiua.github.io/index-constituents/constituents-hsi.csv",
-}
-
-
-def get_components(url: str) -> pd.Series:
-    """Returns companies names from url.
-
-    Args:
-        url (str): Url to a csv file
-
-    Returns:
-        pd.Series: Series of companies names
-    """
-    try:
-        return pd.read_csv(url)["Symbol"]
-    except Exception as e:
-        print(f"Error reading CSV file from {url}: {e}")
-        return pd.Series()
 
 
 def companies_returns_df(companies: pd.Series) -> pd.DataFrame:
@@ -140,4 +113,4 @@ def convert_to_csv(cleaned_data: list[pd.DataFrame], monthly=False):
 ### Creating CSV files for daily and monthly companies returns:
 
 convert_to_csv(cleaned_data)
-convert_to_csv(cleaned_data_m, monthly=True)
+convert_to_csv(to_period_m(cleaned_data), monthly=True)
