@@ -2,8 +2,16 @@ import numpy as np
 import pandas as pd
 import yfinance as yf
 import components_names as cn
+import urls
 
 pd.set_option("mode.use_inf_as_na", True)
+
+indexes_components = {
+    **cn.get_components(urls.sp500_from_wiki, cn.components_sp500),
+    **cn.get_components(urls.components_from_TradingView, cn.components_TV),
+    **cn.get_components(urls.nikkei_from_nikkei, cn.components_nikkei),
+}
+indexes_components["HSI"]
 
 
 def companies_returns_df(companies: pd.Series) -> pd.DataFrame:
@@ -38,16 +46,28 @@ def companies_returns_df(companies: pd.Series) -> pd.DataFrame:
     return companies_df
 
 
-###* Daily components returns for each index:
-sp500 = companies_returns_df(get_components(components_urls["SP500"]))
-nasdaq100 = companies_returns_df(get_components(components_urls["Nasdaq100"]))
-dowjones = companies_returns_df(get_components(components_urls["DowJones"]))
-ftse100 = companies_returns_df(get_components(components_urls["FTSE100"]))
-dax = companies_returns_df(get_components(components_urls["DAX"]))
-hsi = companies_returns_df(get_components(components_urls["HSI"]))
+def returns_dict(indexes_components: dict) -> dict:
+    """
+    Calculate historical data and returns for a dictionary of indexes.
+
+    Args:
+        indexes_components (dict): Dictionary containing index components names
+
+    Returns:
+        dict: Dictionary with historical returns data for each index
+    """
+    index_components_histoical_data = {}
+    for key in indexes_components:
+        print(f"Downloading historical data and calculating returns for {key}")
+        index_components_histoical_data[key] = companies_returns_df(
+            indexes_components[key]
+        )
+
+    return index_components_histoical_data
+
 
 ### Array to iterate
-index_components_histoical_data = [sp500, nasdaq100, dowjones, ftse100, dax, hsi]
+index_components_histoical_data = returns_dict(indexes_components)
 
 
 def clean_data(daily_hist_data: list[pd.DataFrame]) -> list[pd.DataFrame]:
@@ -69,7 +89,7 @@ def clean_data(daily_hist_data: list[pd.DataFrame]) -> list[pd.DataFrame]:
 
 
 ### Array to iterate
-cleaned_data = clean_data(index_components_histoical_data)
+cleaned_data = clean_data(index_components_histoical_data.values())
 
 
 def compound(r):
@@ -101,11 +121,11 @@ def convert_to_csv(cleaned_data: list[pd.DataFrame], monthly=False):
         monthly (bool, optional): Flag to indicate whether to save data monthly. Defaults to False.
     """
     if monthly:
-        for index_data, key in zip(cleaned_data, components_urls.keys()):
+        for index_data, key in zip(cleaned_data, indexes_components.keys()):
             index_data.to_csv(f"{key}_m.csv", index=True)
             print(f"{key}_m.csv")
     else:
-        for index_data, key in zip(cleaned_data, components_urls.keys()):
+        for index_data, key in zip(cleaned_data, indexes_components.keys()):
             index_data.to_csv(f"{key}_d.csv", index=True)
             print(f"{key}_d.csv")
 
@@ -114,3 +134,6 @@ def convert_to_csv(cleaned_data: list[pd.DataFrame], monthly=False):
 
 convert_to_csv(cleaned_data)
 convert_to_csv(to_period_m(cleaned_data), monthly=True)
+
+
+pd.read_csv("FTSE100_m.csv", index_col=0)

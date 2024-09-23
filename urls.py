@@ -7,9 +7,11 @@ sp500_from_wiki = {"SP500": "https://en.wikipedia.org/wiki/List_of_S%26P_500_com
 components_from_TradingView = {
     "Nasdaq100": "https://www.tradingview.com/symbols/NASDAQ-NDX/components/",
     "DowJones": "https://www.tradingview.com/symbols/TVC-DJI/components/",
-    "FTSE100": "https://www.tradingview.com/symbols/TVC-UKX/components/",
-    "DAX": "https://www.tradingview.com/symbols/XETR-DAX/components/",
     "CAC40": "https://www.tradingview.com/symbols/EURONEXT-PX1/components/",
+    # ? With modifications .L
+    "FTSE100": "https://www.tradingview.com/symbols/TVC-UKX/components/",
+    # ? With modifications .DE
+    "DAX": "https://www.tradingview.com/symbols/XETR-DAX/components/",
     # ? With modifications .HK
     "HSI": "https://www.tradingview.com/symbols/HSI-HSI/components/",
 }
