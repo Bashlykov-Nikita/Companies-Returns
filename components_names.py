@@ -1,3 +1,5 @@
+# * File which gets components names from urls
+
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
@@ -30,6 +32,34 @@ def soup(url: str):
     return BeautifulSoup(response.content, "lxml")
 
 
+def mod(url: str, components):
+    """Generates stock symbols based on the URL and components provided.
+
+    Args:
+        url (str): The URL containing information about the stock market.
+        components (list): List of components to generate symbols for.
+
+    Returns:
+        pd.Series: Series of stock symbols based on the URL and components.
+    """
+    # FTSE100
+    if "TVC-UKX" in url:
+        return pd.Series(
+            [
+                component.text + ("L" if component.text[-1] == "." else ".L")
+                for component in components
+            ]
+        )
+    # DAX
+    elif "XETR-DAX" in url:
+        return pd.Series([component.text + ".DE" for component in components])
+    # HSI
+    elif "HSI-HSI" in url:
+        return pd.Series([component.text.zfill(4) + ".HK" for component in components])
+    else:
+        return pd.Series([component.text for component in components])
+
+
 def components_TV(url: str) -> pd.Series:
     """Retrieve the names of components from the specified URL using BeautifulSoup.
 
@@ -42,14 +72,7 @@ def components_TV(url: str) -> pd.Series:
     components = soup(url).find_all(
         "a", class_="apply-common-tooltip tickerNameBox-GrtoTeat tickerName-GrtoTeat"
     )
-    if "HSI-HSI" in url:
-        component_names = pd.Series(
-            [component.text.zfill(4) + ".HK" for component in components]
-        )
-    else:
-        component_names = pd.Series([component.text for component in components])
-
-    return component_names
+    return mod(url, components)
 
 
 def components_nikkei(url: str) -> pd.Series:

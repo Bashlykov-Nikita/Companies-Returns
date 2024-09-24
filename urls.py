@@ -1,3 +1,5 @@
+# * File of urls constants
+
 ### Indexes: S&P 500, Nasdaq Composite, Dow Jones Industrial Average,
 #          FTSE 100, DAX PERFORMANCE-INDEX, CAC 40,
 #          Nikkei 225, HANG SENG INDEX.
@@ -31,5 +33,3 @@ components_urls = {
     "DAX": "https://yfiua.github.io/index-constituents/constituents-dax.csv",
     "HSI": "https://yfiua.github.io/index-constituents/constituents-hsi.csv",
 }
-
-# arr_of_dict = [sp500_from_wiki, components_from_TradingView, nikkei_from_nikkei]

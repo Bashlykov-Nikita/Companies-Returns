@@ -1,3 +1,5 @@
+# * File which creats .csv of returns
+
 import numpy as np
 import pandas as pd
 import yfinance as yf
@@ -11,7 +13,6 @@ indexes_components = {
     **cn.get_components(urls.components_from_TradingView, cn.components_TV),
     **cn.get_components(urls.nikkei_from_nikkei, cn.components_nikkei),
 }
-indexes_components["HSI"]
 
 
 def companies_returns_df(companies: pd.Series) -> pd.DataFrame:
@@ -122,11 +123,11 @@ def convert_to_csv(cleaned_data: list[pd.DataFrame], monthly=False):
     """
     if monthly:
         for index_data, key in zip(cleaned_data, indexes_components.keys()):
-            index_data.to_csv(f"{key}_m.csv", index=True)
+            index_data.to_csv(f"data/{key}_m.csv", index=True)
             print(f"{key}_m.csv")
     else:
         for index_data, key in zip(cleaned_data, indexes_components.keys()):
-            index_data.to_csv(f"{key}_d.csv", index=True)
+            index_data.to_csv(f"data/{key}_d.csv", index=True)
             print(f"{key}_d.csv")
 
 
@@ -134,6 +135,3 @@ def convert_to_csv(cleaned_data: list[pd.DataFrame], monthly=False):
 
 convert_to_csv(cleaned_data)
 convert_to_csv(to_period_m(cleaned_data), monthly=True)
-
-
-pd.read_csv("FTSE100_m.csv", index_col=0)
