@@ -1,0 +1,22 @@
+name: Update hourly
+
+on:
+  schedule:
+    - cron: '0 */1 * * *'  # Run every hour
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Dependencies
+        run: |
+          pip install -r requirements.txt
+      - name: Run Python Script
+        run: |
+          python ./main.py
+      - name: Commit Changes
+        run: |
+          git add .
+          git commit -m "Updated data"
+          git push origin main
