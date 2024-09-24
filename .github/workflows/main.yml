@@ -1,8 +1,8 @@
-name: Update hourly
+name: Update monthly
 
 on:
   schedule:
-    - cron: '0 */1 * * *'  # Run every hour
+    - cron: "0 12 1 * *"  # Run every month
 
 jobs:
   build:
