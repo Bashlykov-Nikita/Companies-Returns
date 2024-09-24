@@ -15,6 +15,10 @@ jobs:
       - name: Run Python Script
         run: |
           python ./main.py
+      - name: Set Git Config
+        run: |          
+          git config --global user.email "bashlykovnikita@gmail.com"
+          git config --global user.name "Bashlykov Nikita"
       - name: Commit Changes
         run: |
           git add .
