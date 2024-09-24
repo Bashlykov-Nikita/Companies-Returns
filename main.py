@@ -1,5 +1,8 @@
 # * File which creats .csv of returns
 
+import sys
+
+sys.dont_write_bytecode = True
 import numpy as np
 import pandas as pd
 import yfinance as yf

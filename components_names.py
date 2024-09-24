@@ -1,5 +1,8 @@
 # * File which gets components names from urls
 
+import sys
+
+sys.dont_write_bytecode = True
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
