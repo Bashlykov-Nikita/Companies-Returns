@@ -10,12 +10,21 @@ This project allows you to obtain historical data on the profits of companies in
 - Nikkei 225 (Japan)
 
 ### Features: 
-- Creates tabular files from historical returns data of companies:
-
-  _d - files with daily returns
-  
+- Creates tabular files from historical returns data of companies:  
+  _d - files with daily returns  
   _m - files with monthly returns.
 - Updates .csv files every month using GitHub Actions.
+### How it works:
+
+1) ***urls.py*** - contains URLs of websites that include the names of components (companies) in the indices.
+2) ***components_names.py*** - extracts component names from these websites using Beautiful Soup.
+3) ***main.py*** - fetches historical data from yfinance using the extracted component names &#8594; calculates daily and monthly profits &#8594; creates a DataFrame for all companies in the index &#8594; generates .csv files from these DataFrames.
+
+### Formulas:
+Return:   
+$$\displaystyle R_{t,t+1} = \frac{(P_{t+1} - P_t)}{P_t}$$  
+Compound Return:  
+$$\displaystyle R_c = \sum\limits_{i=1}^{N} (1 + R_i)^{ppy} - 1 $$
 
 ### To Fetch the .csv files use:
 ```sh
