@@ -3,6 +3,7 @@
 This project allows you to obtain historical data on the profits of companies included in some of the most popular indices:
 - S&P 500 🇺🇸
 - Nasdaq 100 🇺🇸
+- Dow Jones Industrial Average 🇺🇸
 - CAC 40 🇫🇷
 - FTSE 100 🇬🇧
 - DAX 🇩🇪
